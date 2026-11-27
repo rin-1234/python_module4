@@ -1,0 +1,5 @@
+DESCRIPTION
+       write allows you to communicate with other users, by copying lines from your terminal to theirs.
+       When you run the write command, the user you are writing to gets a message of the form:
+           Message from yourname@yourhost on yourtty at hh:mm ...
+til-linux 2.39.3                                                   2023-11-21                                                           WRITE(1)
