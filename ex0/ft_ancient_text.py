@@ -1,8 +1,7 @@
 import sys
-import typing
 
 
-def main():
+def main() -> None:
     if len(sys.argv) != 2:
         print("Usage: ft_ancient_text.py <file>")
         return
@@ -12,17 +11,17 @@ def main():
 
     try:
         file = open(sys.argv[1], "r")
-    except FileNotFoundError as e:
-        print(e)
-        return
-    except PermissionError as e:
-        print(e)
-        return
     except Exception as e:
         print(e)
         return
 
-    context = file.read()
+    try:
+        context = file.read()
+    except Exception as e:
+        print(e)
+        file.close()
+        return
+
     print("---")
     print("")
     print(context)
@@ -30,7 +29,8 @@ def main():
     print("---")
 
     file.close()
-    print("File 'ancient_fragment.txt' closed.")
+    print(f"File {sys.argv[0]} closed.")
+
 
 if __name__ == "__main__":
     main()
