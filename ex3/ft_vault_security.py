@@ -1,59 +1,46 @@
-
-
-class Operation(Enum):
-    READ = 0
-    WRITE = 1
-
 def secure_archive(
     file_name: str,
-    operation: int,
-    output_context: str | None
+    action: str = "read",
+    content: str = ""
 ) -> tuple[bool, str]:
-    if Operation.READ == operation:
+    if action == "read":
         try:
             with open(file_name, "r") as file:
-                context = file.read()
-        except FileNotFoundError as e:
-            print("Using 'secure_archive' to read from a nonexistent file:")
-            return (False, e)
-        except PermissionError as e:
-            print("Using 'secure_archive' to read from an inaccessible file:")
-            return (False, e)
+                return (True, file.read())
         except Exception as e:
-            print("Error occur")
-            return (False, e)
-
-        print("Using 'secure_archive' to read from a regular file:")
-        return (True, context)
-
-    elif Operation.WRITE == operation:
+            return (False, str(e))
+    elif action == "write":
         try:
             with open(file_name, "w") as file:
-                file.write(output_context)
+                file.write(content)
+            return (True, "Content successfully written to file")
         except Exception as e:
-            print("Error occur")
-            return [False, e]
-
-        print("Using 'secure_archive' to write previous content to a new file:")
-        return (True, "'Content successfully written to file'")
-
-    else:
-        return [False, f"Invalid operation: {operation}"]
-
-
+            return (False, str(e))
+    return (False, f"Invalid action: '{action}'")
 
 
 def main() -> None:
     print("=== Cyber Archives Security ===")
-    
-    result = secure_archive("/not/nonexisting/file", Operation.READ)
+    print("")
+
+    print("Using 'secure_archive' to read from a nonexistent file:")
+    print(secure_archive("/not/existing/file"))
+    print("")
+
+    print("Using 'secure_archive' to read from an inaccessible file:")
+    print(secure_archive("/etc/shadow"))
+    print("")
+
+    print("Using 'secure_archive' to read from a regular file:")
+    result = secure_archive("ancient_fragment.txt")
     print(result)
-    result = secure_archive("/etc/shadow", Operation.READ)
-    print(result)
-    result = secure_archive("./ancient_fragment.txt", Operation.READ)
-    print(result)
-    output = secure_archive("./new_file.txt", Operation.WRITE, result.value())
-    print(output)
+    print("")
+
+    print("Using 'secure_archive' to write previous content to a new file:")
+    if result[0]:
+        print(secure_archive("new_fragment.txt", "write", result[1]))
+    else:
+        print("Nothing to write: previous read failed.")
 
 
 if __name__ == "__main__":

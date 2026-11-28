@@ -1,68 +1,80 @@
 import sys
+from typing import IO
 
 
 def main() -> None:
     if len(sys.argv) != 2:
-        print("Usage: ft_ancient_text.py <file>")
+        print("Usage: ft_stream_management.py <file>")
         return
 
+    file_name = sys.argv[1]
     print("=== Cyber Archives Recovery & Preservation ===")
-    print(f"Accessing file {sys.argv[1]}")
+    print(f"Accessing file '{file_name}'")
 
     try:
-        file = open(sys.argv[1], "r")
+        file: IO[str] = open(file_name, "r")
     except Exception as e:
-        print(f"[STDERR] {e}", file=sys.stderr)
+        print(f"[STDERR] Error opening file '{file_name}': {e}",
+              file=sys.stderr)
         return
 
     try:
-        context = file.read()
+        content = file.read()
     except Exception as e:
-        print(e)
+        print(f"[STDERR] Error reading file '{file_name}': {e}",
+              file=sys.stderr)
         file.close()
         return
 
+    print("---")
+    print("")
+    print(content)
+    print("---")
+
     file.close()
-    print(f"File {sys.argv[0]} closed.")
+    print(f"File '{file_name}' closed.")
 
     print("")
-    print("---")
-    print("")
-    print(context)
-    print("")
-    print("---")
-
     print("Transform data:")
     print("---")
     print("")
-    new_context = []
-    for line in context:
-        tmp = line + "#"
-        new_context.append(tmp)
-        print(tmp)
-    print("")
+    new_content = ""
+    for line in content.splitlines():
+        new_content += line + "#\n"
+    print(new_content)
     print("---")
-    print("Enter new file name (or empty):", end="")
-    new_file_name = sys.stdin.readline().strip()
-    if new_file_name is None:
+
+    sys.stdout.write("Enter new file name (or empty): ")
+    sys.stdout.flush()
+    try:
+        new_file_name = sys.stdin.readline().strip()
+    except KeyboardInterrupt:
+        print("")
+        new_file_name = ""
+    if new_file_name == "":
         print("Not saving data.")
         return
 
+    print(f"Saving data to '{new_file_name}'")
     try:
-        new_file = open(new_file_name, "w")
+        new_file: IO[str] = open(new_file_name, "w")
     except Exception as e:
-        print(f"[STDERR] {e}", file=sys.stderr)
+        print(f"[STDERR] Error opening file '{new_file_name}': {e}",
+              file=sys.stderr)
+        print("Data not saved.")
         return
 
     try:
-        new_file.write(new_context)
+        new_file.write(new_content)
     except Exception as e:
-        print(f"[STDERR] {e}", file=sys.stderr)
+        print(f"[STDERR] Error writing file '{new_file_name}': {e}",
+              file=sys.stderr)
+        print("Data not saved.")
         new_file.close()
         return
 
     new_file.close()
-    print(f"Data saved in file {new_file_name}")
+    print(f"Data saved in file '{new_file_name}'.")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import sys
+from typing import IO
 
 
 def main() -> None:
@@ -6,30 +7,30 @@ def main() -> None:
         print("Usage: ft_ancient_text.py <file>")
         return
 
+    file_name = sys.argv[1]
     print("=== Cyber Archives Recovery ===")
-    print(f"Accessing file {sys.argv[1]}")
+    print(f"Accessing file '{file_name}'")
 
     try:
-        file = open(sys.argv[1], "r")
+        file: IO[str] = open(file_name, "r")
     except Exception as e:
-        print(e)
+        print(f"Error opening file '{file_name}': {e}")
         return
 
     try:
-        context = file.read()
+        content = file.read()
     except Exception as e:
-        print(e)
+        print(f"Error reading file '{file_name}': {e}")
         file.close()
         return
 
     print("---")
     print("")
-    print(context)
-    print("")
+    print(content)
     print("---")
 
     file.close()
-    print(f"File {sys.argv[0]} closed.")
+    print(f"File '{file_name}' closed.")
 
 
 if __name__ == "__main__":
